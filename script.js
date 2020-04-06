@@ -8,7 +8,7 @@ const roomHash = location.hash.substring(1);
 const drone = new ScaleDrone('x6HoEbmAgJxGsmr2');
 // Room name needs to be prefixed with 'observable-'
 // const roomName = 'observable-' + roomHash;
-const roomName = "mrossvideochat"
+const roomName = "observable-mrossvideochat"
 const configuration = {
   iceServers: [{
     urls: 'stun:stun.l.google.com:19302'
@@ -27,11 +27,13 @@ drone.on('open', error => {
   if (error) {
     return console.error(error);
   }
+  console.log("Opening room")
   room = drone.subscribe(roomName);
   room.on('open', error => {
     if (error) {
       onError(error);
     }
+    console.log("Room opened")
   });
   // We're connected to the room and received an array of 'members'
   // connected to the room (including us). Signaling server is ready.
