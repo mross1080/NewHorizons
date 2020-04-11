@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
   <meta charset="utf-8">
@@ -15,6 +16,7 @@
       padding: 0 50px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
+
     video {
       background: white;
       background-image: url(https://www.kirupa.com/images/orange_logo_svg.svg);
@@ -27,6 +29,7 @@
       border-radius: 2px;
       padding: 0;
     }
+
     .copy {
       position: fixed;
       top: 25px;
@@ -36,11 +39,135 @@
       color: white;
     }
   </style>
+  <script type="text/javascript" , src="build/three.js"></script>
+  <script src='build/threex.videotexture.js'></script>
+
+
 </head>
+
 <body>
   <div class="copy">Send your URL to a friend to start a video call</div>
   <video id="localVideo" autoplay muted></video>
   <video id="remoteVideo" autoplay></video>
   <script src="script.js"></script>
+  <script type="text/javascript">
+    console.log("Starting three script")
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // var geometry = new THREE.BoxGeometry(1,1,1);
+
+    // var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF})
+
+    var video = document.getElementById('localVideo');
+
+    var remoteVideoSource = document.getElementById('remoteVideo');
+    var texture = new THREE.VideoTexture(video);
+    var remoteTexture = new THREE.VideoTexture(remoteVideoSource);
+
+    var geometry = new THREE.PlaneBufferGeometry(8, 9);
+    var remoteGeometry = new THREE.PlaneBufferGeometry(8, 9);
+
+remoteGeometry.scale(0.5, 0.5, 0.5);
+    geometry.scale(0.5, 0.5, 0.5);
+    var material = new THREE.MeshBasicMaterial({
+      map: texture
+    });
+
+    var m2 = new THREE.MeshBasicMaterial({
+      map: remoteTexture
+    });
+
+
+    var count = 128;
+    var radius = 32;
+    camera.position.z = 3
+
+    var cube = new THREE.Mesh(geometry, material);
+    var mesh = new THREE.Mesh(geometry, m2);
+    cube.position.x = -2.0
+    mesh.position.x = 2.0
+    scene.add(cube);
+    scene.add(mesh)
+
+    // //
+    console.log("Video")
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+      var constraints = {
+        video: {
+          width: 1280,
+          height: 720,
+          facingMode: 'user'
+        }
+      };
+
+      navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+
+        // apply the stream to the video element used in the texture
+
+        video.srcObject = stream;
+        video.play();
+        video.currentTime = 1;
+
+
+
+
+      }).catch(function(error) {
+
+        console.error('Unable to access the camera/webcam.', error);
+
+      });
+
+    } else {
+
+      console.error('MediaDevices interface not available.');
+
+    }
+
+
+
+
+    // // texture.minFilter = THREE.LinearFilter;
+    // // texture.magFilter = THREE.LinearFilter;
+    // // texture.format = THREE.RGBFormat;
+
+
+    // console.log("0")
+
+    // console.log("1")
+    // var mesh	= new THREE.Mesh( geometry, material );
+    // scene.add( mesh );
+    // scene.add(texture)
+    console.log("Done")
+
+    var update = function() {
+
+      cube.rotation.x += 1.01;
+      cube.rotation.y += 1.005;
+    };
+
+    var render = function() {
+
+      renderer.render(scene, camera);
+    }
+
+
+    var GameLoop = function() {
+
+      requestAnimationFrame(GameLoop);
+      // update();
+      render();
+
+
+    };
+    GameLoop();
+  </script>
 </body>
+
 </html>

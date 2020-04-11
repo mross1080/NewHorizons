@@ -4,10 +4,8 @@ if (!location.hash) {
 }
 const roomHash = location.hash.substring(1);
 
-// TODO: Replace with your own channel ID
 const drone = new ScaleDrone('x6HoEbmAgJxGsmr2');
-// Room name needs to be prefixed with 'observable-'
-// const roomName = 'observable-' + roomHash;
+
 const roomName = "observable-mrossvideochat"
 const configuration = {
   iceServers: [{
